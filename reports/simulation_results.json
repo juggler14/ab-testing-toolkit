@@ -1,0 +1,59 @@
+{
+  "aa_tests": {
+    "simulations": 10000,
+    "n_per_group": 1000,
+    "false_positive_rate_pct": 4.89,
+    "ci95_pct": [
+      4.48,
+      5.33
+    ]
+  },
+  "power": {
+    "uplift_pct": 5.0,
+    "required_n_per_group": 10790,
+    "designed_power_pct": 80,
+    "empirical_power_pct": 77.8,
+    "ci95_pct": [
+      75.93,
+      79.57
+    ]
+  },
+  "peeking": {
+    "looks": 10,
+    "simulations": 2000,
+    "false_positive_rate_pct": 18.8,
+    "ci95_pct": [
+      17.1,
+      20.52
+    ]
+  },
+  "ratio_metric": {
+    "simulations": 2000,
+    "naive_order_level_ttest_fpr_pct": 27.9,
+    "naive_ci95_pct": [
+      25.93,
+      29.86
+    ],
+    "delta_method_fpr_pct": 4.7,
+    "delta_ci95_pct": [
+      3.81,
+      5.66
+    ]
+  },
+  "cuped_real_data": {
+    "dataset": "UCI Online Retail II, клиенты с покупками до дек 2010",
+    "customers": 4239,
+    "correlation_pre_post": 0.867,
+    "variance_reduction_pct": 75.3,
+    "ci_width_reduction_pct": 50.3,
+    "aa_fpr_raw_pct": 4.2,
+    "aa_fpr_cuped_pct": 4.25,
+    "simulated_effect_pct": 25.0,
+    "power_raw_pct": 28.8,
+    "power_cuped_pct": 79.6,
+    "splits": 2000,
+    "mde_raw_pct": 44.4,
+    "mde_cuped_pct": 22.1,
+    "equivalent_sample_size_multiplier": 4.0
+  }
+}
