@@ -13,6 +13,9 @@ class TestResult:
     ci_low: float           # 95% ДИ для разницы
     ci_high: float
     p_value: float
+    se: float = float("nan")         # стандартная ошибка разницы
+    statistic: float = float("nan")  # t- или z-статистика
+    dof: float = float("nan")        # степени свободы (для t-теста)
 
     @property
     def relative_effect(self) -> float:
@@ -27,7 +30,8 @@ def _z_result(m_a: float, m_b: float, se: float, alpha: float) -> TestResult:
     diff = m_b - m_a
     z = diff / se
     q = stats.norm.ppf(1 - alpha / 2)
-    return TestResult(m_a, m_b, diff, diff - q * se, diff + q * se, float(2 * stats.norm.sf(abs(z))))
+    return TestResult(m_a, m_b, diff, diff - q * se, diff + q * se, float(2 * stats.norm.sf(abs(z))),
+                      se=float(se), statistic=float(z))
 
 
 def welch_ttest(a, b, alpha: float = 0.05) -> TestResult:
@@ -39,7 +43,8 @@ def welch_ttest(a, b, alpha: float = 0.05) -> TestResult:
     diff = b.mean() - a.mean()
     q = stats.t.ppf(1 - alpha / 2, dof)
     p = 2 * stats.t.sf(abs(diff / se), dof)
-    return TestResult(a.mean(), b.mean(), diff, diff - q * se, diff + q * se, float(p))
+    return TestResult(a.mean(), b.mean(), diff, diff - q * se, diff + q * se, float(p),
+                      se=float(se), statistic=float(diff / se), dof=float(dof))
 
 
 def ztest_proportions(conv_a: int, n_a: int, conv_b: int, n_b: int, alpha: float = 0.05) -> TestResult:
@@ -49,7 +54,8 @@ def ztest_proportions(conv_a: int, n_a: int, conv_b: int, n_b: int, alpha: float
     se_pool = np.sqrt(p_pool * (1 - p_pool) * (1 / n_a + 1 / n_b))
     se = np.sqrt(p_a * (1 - p_a) / n_a + p_b * (1 - p_b) / n_b)
     res = _z_result(p_a, p_b, se, alpha)
-    res.p_value = float(2 * stats.norm.sf(abs((p_b - p_a) / se_pool)))
+    res.statistic = float((p_b - p_a) / se_pool)
+    res.p_value = float(2 * stats.norm.sf(abs(res.statistic)))
     return res
 
 
@@ -63,7 +69,8 @@ def bootstrap_test(a, b, stat=np.mean, n_boot: int = 5000, alpha: float = 0.05, 
     lo, hi = np.quantile(diffs, [alpha / 2, 1 - alpha / 2])
     # p-value: удвоенная доля бутстрап-разниц по «другую сторону» от нуля
     p = 2 * min((diffs <= 0).mean(), (diffs >= 0).mean())
-    return TestResult(float(stat(a)), float(stat(b)), float(stat(b) - stat(a)), float(lo), float(hi), float(min(p, 1.0)))
+    return TestResult(float(stat(a)), float(stat(b)), float(stat(b) - stat(a)), float(lo), float(hi), float(min(p, 1.0)),
+                      se=float(diffs.std(ddof=1)))
 
 
 def _ratio_mean_var(num, den):
