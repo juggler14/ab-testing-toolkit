@@ -47,10 +47,10 @@ results["aa_tests"] = {"simulations": N_SIM, "n_per_group": N, "false_positive_r
 
 fig, ax = plt.subplots(figsize=(7, 3.8))
 ax.hist(p_aa, bins=20, color=NAVY, edgecolor="white")
-ax.axhline(N_SIM / 20, color=ACCENT, ls="--", label="ожидание при равномерном распределении")
-ax.set_title(f"A/A-тесты: p-value распределены равномерно, ложных срабатываний {100 * fp / N_SIM:.1f}%",
+ax.axhline(N_SIM / 20, color=ACCENT, ls="--", label="expected under uniform distribution")
+ax.set_title(f"A/A tests: p-values are uniform, false positive rate {100 * fp / N_SIM:.1f}%",
              loc="left", fontweight="bold", fontsize=11)
-ax.set_xlabel("p-value"); ax.set_ylabel("Число тестов"); ax.legend(fontsize=8)
+ax.set_xlabel("p-value"); ax.set_ylabel("Number of tests"); ax.legend(fontsize=8)
 fig.tight_layout(); fig.savefig(FIG / "aa_pvalues.png", dpi=150); plt.close(fig)
 
 # --- 2. Мощность ------------------------------------------------------------------
@@ -80,10 +80,10 @@ results["peeking"] = {"looks": LOOKS, "simulations": N_PEEK,
 
 fig, ax = plt.subplots(figsize=(6, 3.6))
 vals = [results["aa_tests"]["false_positive_rate_pct"], results["peeking"]["false_positive_rate_pct"]]
-bars = ax.bar(["Один анализ в конце", f"Подглядывание\n({LOOKS} проверок)"], vals, color=[NAVY, ACCENT], width=0.55)
+bars = ax.bar(["Single analysis at the end", f"Peeking\n({LOOKS} interim looks)"], vals, color=[NAVY, ACCENT], width=0.55)
 ax.bar_label(bars, fmt="%.1f%%"); ax.axhline(5, color="grey", ls="--", lw=1)
-ax.set_ylabel("Ложные срабатывания, %")
-ax.set_title(f"Подглядывание увеличивает ложные срабатывания в {vals[1] / vals[0]:.1f} раза", loc="left",
+ax.set_ylabel("False positive rate, %")
+ax.set_title(f"Peeking inflates the false positive rate {vals[1] / vals[0]:.1f}x", loc="left",
              fontweight="bold", fontsize=11)
 fig.tight_layout(); fig.savefig(FIG / "peeking.png", dpi=150); plt.close(fig)
 
@@ -129,7 +129,7 @@ for i in range(N_CUPED):
 sim = pd.DataFrame(stats_rows)
 aa, eff = sim[sim.scenario == "A/A"], sim[sim.scenario != "A/A"]
 results["cuped_real_data"] = {
-    "dataset": "UCI Online Retail II, клиенты с покупками до дек 2010",
+    "dataset": "UCI Online Retail II, customers with purchases before Dec 2010",
     "customers": n_cust, "correlation_pre_post": round(float(np.corrcoef(x_all, y_all)[0, 1]), 3),
     "variance_reduction_pct": round(100 * aa.var_reduction.mean(), 1),
     "ci_width_reduction_pct": round(100 * (1 - aa.cuped_ci_width.mean() / aa.raw_ci_width.mean()), 1),
@@ -149,12 +149,12 @@ results["cuped_real_data"]["equivalent_sample_size_multiplier"] = round(
 
 fig, ax = plt.subplots(figsize=(6.4, 3.6))
 c = results["cuped_real_data"]
-bars = ax.bar(["Обычный t-тест", "t-тест + CUPED"], [c["power_raw_pct"], c["power_cuped_pct"]],
+bars = ax.bar(["Welch t-test", "Welch t-test + CUPED"], [c["power_raw_pct"], c["power_cuped_pct"]],
               color=[LIGHT, NAVY], width=0.55)
-ax.bar_label(bars, fmt="%.0f%%"); ax.set_ylim(0, 100); ax.set_ylabel("Мощность, %")
-ax.set_title(f"CUPED на реальной выручке: дисперсия −{c['variance_reduction_pct']:.0f}%, "
-             f"мощность ×{c['power_cuped_pct'] / c['power_raw_pct']:.1f}", loc="left", fontweight="bold", fontsize=11)
-ax.text(0.5, -0.22, f"{c['customers']:,} клиентов, эффект +{EFFECT:.0%}, {N_CUPED:,} случайных разбиений".replace(",", " "),
+ax.bar_label(bars, fmt="%.0f%%"); ax.set_ylim(0, 100); ax.set_ylabel("Power, %")
+ax.set_title(f"CUPED on real revenue: variance −{c['variance_reduction_pct']:.0f}%, "
+             f"power ×{c['power_cuped_pct'] / c['power_raw_pct']:.1f}", loc="left", fontweight="bold", fontsize=11)
+ax.text(0.5, -0.22, f"{c['customers']:,} customers, true effect +{EFFECT:.0%}, {N_CUPED:,} random splits",
         transform=ax.transAxes, ha="center", fontsize=8, color="grey")
 fig.tight_layout(); fig.savefig(FIG / "cuped_power.png", dpi=150); plt.close(fig)
 

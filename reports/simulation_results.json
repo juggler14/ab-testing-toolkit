@@ -41,7 +41,7 @@
     ]
   },
   "cuped_real_data": {
-    "dataset": "UCI Online Retail II, клиенты с покупками до дек 2010",
+    "dataset": "UCI Online Retail II, customers with purchases before Dec 2010",
     "customers": 4239,
     "correlation_pre_post": 0.867,
     "variance_reduction_pct": 75.3,
