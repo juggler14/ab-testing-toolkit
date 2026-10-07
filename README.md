@@ -2,6 +2,8 @@
 
 **English** · [Русский](README.ru.md)
 
+**Live app:** [ab-testing-toolkit-kozulin.streamlit.app](https://ab-testing-toolkit-kozulin.streamlit.app)
+
 A Python library (`abkit`) and a Streamlit app for A/B test design and analysis: sample size and MDE, Welch's t-test, two-proportion z-test, bootstrap, delta method for ratio metrics, CUPED, and SRM checks. Every method is validated with simulations (A/A tests, power, peeking); CUPED is also evaluated on real revenue data for 4,239 customers from UCI Online Retail II.
 
 **Stack:** Python · NumPy · SciPy · pandas · Streamlit · Plotly · pytest

@@ -2,6 +2,8 @@
 
 [English](README.md) · **Русский**
 
+**Приложение онлайн:** [ab-testing-toolkit-kozulin.streamlit.app](https://ab-testing-toolkit-kozulin.streamlit.app)
+
 Python-библиотека `abkit` и Streamlit-приложение: размер выборки и MDE, t-тест Уэлча, z-тест для долей, бутстрап, дельта-метод для метрик-отношений, CUPED, проверка SRM. Корректность методов проверена симуляциями (A/A-тесты, мощность, peeking), CUPED — также на выручке 4 239 клиентов из UCI Online Retail II.
 
 **Стек:** Python · NumPy · SciPy · pandas · Streamlit · Plotly · pytest
